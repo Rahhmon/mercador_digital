@@ -113,11 +113,6 @@ class FacebookScraper:
         agent = Agent(EnumDatabaseNames.DIGITAL_MARKETPLACE.value)
         db = agent.database
 
-        #Using this to restart some searches.
-        #db[EnumCollectionNames.FACEBOOK_MARKET_PLACE.value].update_many({}, {"$set": {
-        #                "status": EnumStatus.INITIAL_SCRAP.value,
-        #            }})
-
         all_scraped_items_cursor = db[EnumCollectionNames.FACEBOOK_MARKET_PLACE.value].find({
             'status': EnumStatus.INITIAL_SCRAP.value,
         })

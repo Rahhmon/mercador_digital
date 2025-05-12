@@ -48,15 +48,18 @@ class DataTreatment:
             return parts
 
         for item in all_items:
-            raw_price = item['price']
-            prices = extract_price_parts(raw_price)
-            if len(prices) == 2:
-                item['price'] = prices[0]
-                item['old_price'] = prices[1]
-            elif(len(prices) == 1):
-                item['price'] = prices[0]
+            try:
+                raw_price = item['price']
+                prices = extract_price_parts(raw_price)
+                if len(prices) == 2:
+                    item['price'] = float(prices[0].replace(".", ""))
+                    item['old_price'] = float(prices[1].replace(".", ""))
+                elif(len(prices) == 1):
+                    item['price'] = float(prices[0].replace(".", ""))
 
-            formatted_items.append(item)
+                formatted_items.append(item)
+            except Exception as e:
+                print(f'Error extracting price: {e}')
 
         return formatted_items
 
@@ -81,19 +84,27 @@ class DataTreatment:
     @staticmethod
     def main():
         try:
+            #1. Define which items will be selected to data cleaning
             agent = Agent(EnumDatabaseNames.DIGITAL_MARKETPLACE.value)
             database = agent.database
             collection = database[EnumCollectionNames.FACEBOOK_MARKET_PLACE.value]
             all_items = collection.find({'status': EnumStatus.COMPLEMENT_INFORMATION.value})
 
+            #2. Extract and clean item prices
             cleaned_price_items = DataTreatment.extract_item_prices(all_items)
+
+            #3. Extract and clean item address (city, state, country, postcode)
             formatted_address_items = DataTreatment.extract_item_address(cleaned_price_items)
 
+            #4. Update old cleaned information status
             for item in formatted_address_items:
                 collection.update_one({'_id': item['_id']}, {'$set': {'status': EnumStatus.CLEAN_DATA.value}})
 
+            #5. Write cleaned data to a new collection
             database[EnumCollectionNames.FACEBOOK_CLEANED_DATA.value].insert_many(cleaned_price_items)
-            return True ##Success
+
+            ##Success
+            return True
         except Exception as e:
             print(f'Error: {e}')
 
