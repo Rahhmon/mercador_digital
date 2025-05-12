@@ -8,9 +8,11 @@ MONGO_URI = Settings.MONGO_URI
 
 class EnumCollectionNames(Enum):
     FACEBOOK_MARKET_PLACE = "FACEBOOK_MARKET_PLACE"
+    FACEBOOK_CLEANED_DATA = "FACEBOOK_CLEANED_DATA"
 
 class EnumDatabaseNames(Enum):
     DIGITAL_MARKETPLACE = "DIGITAL_MARKETPLACE"
+
 
 
 class Agent:
