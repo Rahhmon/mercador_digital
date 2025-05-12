@@ -19,7 +19,7 @@ class CelularInfo(BaseModel):
 
 
 class MobilePhoneParser:
-    def __init__(self, model: str = "gpt-4", temperature: float = 0.2):
+    def __init__(self, model: str = "gpt-4o", temperature: float = 0.2):
         self.client = OpenAI(api_key=Settings.OPEN_AI_API_KEY)
         self.model = model
         self.temperature = temperature
