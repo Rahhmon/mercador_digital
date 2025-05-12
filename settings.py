@@ -5,4 +5,6 @@ load_dotenv()
 
 
 class Settings:
-    VAR = os.getenv("")
+    FACEBOOK_EMAIL = os.getenv("FACEBOOK_EMAIL")
+    FACEBOOK_PASSWORD = os.getenv("FACEBOOK_PASSWORD")
+    MONGO_URI = os.getenv("MONGO_URI")
