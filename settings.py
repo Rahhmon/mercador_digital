@@ -8,3 +8,4 @@ class Settings:
     FACEBOOK_EMAIL = os.getenv("FACEBOOK_EMAIL")
     FACEBOOK_PASSWORD = os.getenv("FACEBOOK_PASSWORD")
     MONGO_URI = os.getenv("MONGO_URI")
+    OPEN_AI_API_KEY = os.getenv("OPEN_AI_API_KEY")

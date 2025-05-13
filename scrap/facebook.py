@@ -174,22 +174,25 @@ class FacebookScraper:
                     }}
                 )
 
-if __name__ == '__main__':
-    driver = ScrapingFunctions.create_driver()
-    try:
-        FacebookScraper.login(driver)
-        time.sleep(10)
-        FacebookScraper.search_in_marketplace(driver)
-        time.sleep(10)
-        available_products = FacebookScraper.find_all_available_products(driver)
-        FacebookScraper.find_all_new_products(available_products)
-
-
-        #Starts a new driver with no login information in it.
-        driver.quit()
+    @staticmethod
+    def main():
         driver = ScrapingFunctions.create_driver()
-        FacebookScraper.complement_available_product_info(driver)
-    except Exception as e:
-        print(f'Exception occurred: {e}')
-    finally:
-        driver.quit()
+        try:
+            FacebookScraper.login(driver)
+            time.sleep(10)
+            FacebookScraper.search_in_marketplace(driver)
+            time.sleep(10)
+            available_products = FacebookScraper.find_all_available_products(driver)
+            FacebookScraper.find_all_new_products(available_products)
+
+            # Starts a new driver with no login information in it.
+            driver.quit()
+            driver = ScrapingFunctions.create_driver()
+            FacebookScraper.complement_available_product_info(driver)
+        except Exception as e:
+            print(f'Exception occurred: {e}')
+        finally:
+            driver.quit()
+
+if __name__ == '__main__':
+    FacebookScraper.main()
