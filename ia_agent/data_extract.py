@@ -19,7 +19,7 @@ class CelularInfo(BaseModel):
 
 
 class MobilePhoneParser:
-    def __init__(self, model: str = "gpt-4o", temperature: float = 0.2):
+    def __init__(self, model: str = "gpt-4", temperature: float = 0.2):
         self.client = OpenAI(api_key=Settings.OPEN_AI_API_KEY)
         self.model = model
         self.temperature = temperature
@@ -43,7 +43,7 @@ class MobilePhoneParser:
             
             Campos a extrair, caso o item seja um celular:
             
-            - modelo: nome completo do celular
+            - modelo: nome completo do celular (excluir informações como: Apple; tamanho de armazenamento (128gb).
             - armazenamento: capacidade em GB
             - capacidade_bateria: percentual da saúde da bateria
             - pecas_trocadas: lista de peças trocadas
@@ -85,7 +85,7 @@ class MobilePhoneParser:
         agent = Agent(EnumDatabaseNames.DIGITAL_MARKETPLACE.value)
         database = agent.database
         collection = database[EnumCollectionNames.FACEBOOK_CLEANED_DATA.value]
-        all_items = collection.find({'status': EnumStatus.CLEAN_DATA.value})
+        all_items = collection.find({})
 
         # 1. Instantiate the model.
         parser = MobilePhoneParser()
@@ -96,20 +96,20 @@ class MobilePhoneParser:
                 description=item.get('description'),
                 seller_description=item.get('seller_description')
             )
-
-            if ia_info.get("modelo") != "N.A":
-                collection.update_one({'_id': item.get('_id')},
-                                      {'$set':
-                                          {
-                                              'model': ia_info.modelo,
-                                              'storage': ia_info.armazenamento,
-                                              'batery_capacity': ia_info.capacidade_bateria,
-                                              'replaced_parts': ia_info.pecas_trocadas,
-                                              'face_id': ia_info.face_id,
-                                              'needs_repair': ia_info.necessita_manutencao,
-                                              'broken_parts': ia_info.pecas_com_problema,
-                                              'status': EnumStatus.AGENT_ACTION.value,
-                                          }})
+            if ia_info:
+                if ia_info.modelo != "N.A":
+                    collection.update_one({'_id': item.get('_id')},
+                                          {'$set':
+                                              {
+                                                  'model': ia_info.modelo,
+                                                  'storage': ia_info.armazenamento,
+                                                  'batery_capacity': ia_info.capacidade_bateria,
+                                                  'replaced_parts': ia_info.pecas_trocadas,
+                                                  'face_id': ia_info.face_id,
+                                                  'needs_repair': ia_info.necessita_manutencao,
+                                                  'broken_parts': ia_info.pecas_com_problema,
+                                                  'status': EnumStatus.AGENT_ACTION.value,
+                                              }})
 
 if __name__ == "__main__":
     MobilePhoneParser.main()

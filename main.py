@@ -1,5 +1,5 @@
 from scrap.facebook import FacebookScraper
-from ia_agent.iphone_model import MobilePhoneParser
+from ia_agent.data_extract import MobilePhoneParser
 from data_treatment import DataTreatment
 
 
